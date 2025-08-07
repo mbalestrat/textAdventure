@@ -326,9 +326,12 @@ pub fn clear_screen() -> Result<()> {
 }
 
 pub fn print_title() {
+    let indent = 2; // Consistent with narrative text indentation
+    let mut stdout = io::stdout();
+
     // Check terminal size and use appropriate title
     if let Ok((_, _)) = terminal::size() {
-        // Smaller title for narrow terminals
+        // Title banner with proper indentation - already has correct spacing
         let simple_title = r#"
  ████████╗███████╗██╗  ██╗████████╗
  ╚══██╔══╝██╔════╝╚██╗██╔╝╚══██╔══╝
@@ -345,13 +348,26 @@ pub fn print_title() {
 "#;
         println!("{}", simple_title.bright_blue());
     }
-    println!(" {}", "Initialising...".bright_green().bold());
-    println!("{} ", "--------------------------------".bright_blue());
+
+    // Initializing text with proper indentation
+    execute!(stdout, cursor::MoveToColumn(indent)).unwrap();
+    println!("{}", "Initialising...".bright_green().bold());
+
+    // Divider with proper indentation
+    execute!(stdout, cursor::MoveToColumn(indent)).unwrap();
+    println!("{}", "--------------------------------".bright_blue());
 }
 
 pub fn print_slowly(text: &str, color: Color) -> Result<()> {
+    let indent = 2; // Consistent with narrative text indentation
     let mut stdout = io::stdout();
-    
+
+    // Position at the start of the line with proper indentation
+    execute!(
+        stdout,
+        cursor::MoveToColumn(indent)
+    )?;
+
     for c in text.chars() {
         execute!(
             stdout,
@@ -441,8 +457,12 @@ pub fn print_narrative(text: &str) -> Result<()> {
 }
 
 pub fn print_hours(hours: i32) -> Result<()> {
-    let hours_text = format!(" {} hours now remain.", hours);
-    
+    let hours_text = format!("{} hours now remain.", hours);
+    let indent = 2; // Consistent with narrative text indentation
+
+    let mut stdout = io::stdout();
+    execute!(stdout, cursor::MoveToColumn(indent))?;
+
     if hours <= 3 {
         print_message(&hours_text, Color::Red)
     } else if hours <= 6 {
@@ -453,38 +473,58 @@ pub fn print_hours(hours: i32) -> Result<()> {
 }
 
 pub fn print_choices(choices: &[&str]) -> Result<()> {
+    let indent = 2; // Consistent with narrative text indentation
+    let mut stdout = io::stdout();
+
     println!();
-    print_message(" What next?", Color::Cyan)?;
-    
+
+    // "What next?" prompt
+    execute!(stdout, cursor::MoveToColumn(indent))?;
+    print_message("What next?", Color::Cyan)?;
+
+    // Print each choice with consistent indentation
     for choice in choices {
-        print_message(&format!("  {}", choice), Color::DarkCyan)?;
+        println!();
+        execute!(stdout, cursor::MoveToColumn(indent + 2))?; // Additional indent for choices
+        print_message(choice, Color::DarkCyan)?;
     }
-    
+
+    println!();
     Ok(())
 }
 
 pub fn print_divider() -> Result<()> {
-    print_message("------------------------------------------------------- ", Color::DarkBlue)
+    println!();
+    let mut stdout = io::stdout();
+    execute!(stdout, cursor::MoveToColumn(0))?; // Divider starts at column 0
+    print_message("------------------------------------------------------- ", Color::DarkBlue)?;
+    println!();
+    Ok(())
 }
 
 pub fn print_message(message: &str, color: Color) -> Result<()> {
+    // This function doesn't control indentation; caller should position cursor
     let mut stdout = io::stdout();
     execute!(
         stdout,
         SetForegroundColor(color),
-        Print(format!("{} ", message)),
+        Print(message),
         ResetColor
     )
 }
 
 pub fn print_error(message: &str) -> Result<()> {
+    let indent = 2; // Consistent with narrative text indentation
     let mut stdout = io::stdout();
     execute!(
         stdout,
+        cursor::MoveToColumn(indent),
         SetForegroundColor(Color::Red),
-        Print(format!("{} ", message)),
+        Print(message),
         ResetColor
-    )
+    )?;
+    println!();
+    Ok(())
 }
 
 pub fn print_epilogue(text: &str) -> Result<()> {
