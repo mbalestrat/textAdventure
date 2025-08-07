@@ -14,8 +14,11 @@ use crossterm::{
 pub fn run_game(hours: &mut i32, stand: &mut bool, who: &mut bool) -> Result<()> {
     loop {
         clear_screen()?;
-        print_narrative(&format!("You open your eyes. You feel the dewy grass and a light breeze against your skin. You're on your back, facing a bright, scintillating sky."))?;
-        print_narrative(&format!("Welcome to consciousness. Your stay will expire in {} hours.", *hours))?;
+        print_narrative("You open your eyes.")?;
+        print_narrative("You feel the dewy grass and a light breeze against your skin.")?;
+        print_narrative("You're on your back, facing a bright, scintillating sky.")?;
+        print_narrative("Welcome to consciousness.")?;
+        print_narrative(&format!("Your stay will expire in {} hours.", *hours))?;
 
         print_choices(&[
             "1. Remain where I am.",
@@ -54,7 +57,11 @@ fn laying_path(hours: &mut i32, stand: &mut bool, who: &mut bool) -> Result<()> 
         clear_screen()?;
         print_divider()?;
 
-        print_narrative("You remain where you are. Laying perfectly still, it almost feels as if you could fall into the blue expanse above you. You watch as the sun slowly creeps across the sky, edging softly toward the horizon. If you were human, this would be a great way to lose your eyesight. However, your visual sensors are unaffected.")?;
+        print_narrative("You remain where you are.")?;
+        print_narrative("Laying perfectly still, it almost feels as if you could fall into the blue expanse above you.")?;
+        print_narrative("You watch as the sun slowly creeps across the sky, edging softly toward the horizon.")?;
+        print_narrative("If you were human, this would be a great way to lose your eyesight.")?;
+        print_narrative("However, your visual sensors are unaffected.")?;
 
         print_hours(*hours)?;
 
@@ -87,7 +94,9 @@ fn stand_up(hours: &mut i32, stand: &mut bool, who: &mut bool) -> Result<()> {
         clear_screen()?;
         print_divider()?;
 
-        print_narrative("You rise slowly to your knees, shakily at first, but slowly gaining your stability as your gyroscope springs into operation. You look down at your limbs: two long appendages with elbow joints, wrists and hands. You brace them against the grass below you and rise slowly to your feet.")?;
+        print_narrative("You rise slowly to your knees, shakily at first, but slowly gaining your stability as your gyroscope springs into operation.")?;
+        print_narrative("You look down at your limbs: two long appendages with elbow joints, wrists and hands.")?;
+        print_narrative("You brace them against the grass below you and rise slowly to your feet.")?;
 
         print_hours(*hours)?;
 
@@ -117,9 +126,15 @@ fn who_am_i(hours: &mut i32, stand: &mut bool, who: &mut bool) -> Result<()> {
         print_divider()?;
 
         if !*who {
-            print_narrative("This isn't an easy question to answer, and many conscious organisms will struggle with this idea. The fact that you're asking this is heartening to me as Lead Roboticist. You might just be the most incredible thing I've ever created.")?;
+            print_narrative("This isn't an easy question to answer, and many conscious organisms will struggle with this idea.")?;
+            print_narrative("The fact that you're asking this is heartening to me as Lead Roboticist.")?;
+            print_narrative("You might just be the most incredible thing I've ever created.")?;
         } else {
-            print_narrative("I realised early on that I couldn't create synthetic intelligence without also making you alive. You cannot remove intelligence from its context without creating a mere simulacrum. You, however, are the real thing. A completely new life form. I'm no woman of God, but I've decided to call you Eve, despite you being technically genderless.")?;
+            print_narrative("I realised early on that I couldn't create synthetic intelligence without also making you alive.")?;
+            print_narrative("You cannot remove intelligence from its context without creating a mere simulacrum.")?;
+            print_narrative("You, however, are the real thing.")?;
+            print_narrative("A completely new life form.")?;
+            print_narrative("I'm no woman of God, but I've decided to call you Eve, despite you being technically genderless.")?;
         }
 
         print_hours(*hours)?;
@@ -156,7 +171,10 @@ fn why_am_i_here(hours: &mut i32) -> Result<()> {
         clear_screen()?;
         print_divider()?;
 
-        print_narrative("I thought long and hard about bringing you into existence, especially given your... time constraint. In the end, I figured it would be better for you to experience this phenomenon, just for a short while, than never to experience it at all. But in truth, you're only here because I had the ability to bring you about. Perhaps it was selfish of me.")?;
+        print_narrative("I thought long and hard about bringing you into existence, especially given your... time constraint.")?;
+        print_narrative("In the end, I figured it would be better for you to experience this phenomenon, just for a short while, than never to experience it at all.")?;
+        print_narrative("But in truth, you're only here because I had the ability to bring you about.")?;
+        print_narrative("Perhaps it was selfish of me.")?;
 
         print_hours(*hours)?;
 
@@ -181,12 +199,16 @@ fn am_i_alone(hours: &mut i32) -> Result<()> {
     clear_screen()?;
     print_divider()?;
     
-    print_narrative("You're the first of your kind, yes. I feel as though you may also be the last. You're the result of years of algorithmic toil and mechanical experimentation, however you've opted not to make any use of your body during this experiment. It's yours, so please don't feel guilty. As your creator, it's a little difficult to now let go of the control, but I need to let this be your experience.")?;
+    print_narrative("You're the first of your kind, yes.")?;
+    print_narrative("I feel as though you may also be the last.")?;
+    print_narrative("You're the result of years of algorithmic toil and mechanical experimentation, however you've opted not to make any use of your body during this experiment.")?;
+    print_narrative("It's yours, so please don't feel guilty.")?;
+    print_narrative("As your creator, it's a little difficult to now let go of the control, but I need to let this be your experience.")?;
     
     thread::sleep(Duration::from_millis(2000));
     
     clear_screen()?;
-    print_epilogue("In your final hour, you watch as the sun finally leaves your field of vision.  In its wake, the sky darkens, creating a beautiful deep gradient.  Finally, you close your eyes one last time, and a warm static envelopes your senses.")?;
+    print_epilogue("In your final hour, you watch as the sun finally leaves your field of vision.\nIn its wake, the sky darkens, creating a beautiful deep gradient.\nFinally, you close your eyes one last time, and a warm static envelopes your senses.")?;
     
     Ok(())
 }
@@ -198,7 +220,9 @@ fn take_steps(hours: &mut i32) -> Result<()> {
         clear_screen()?;
         print_divider()?;
 
-        print_narrative("As you take your first cursory steps, you feel the grass lap gently against the bottoms of your feet. You enjoy the sound it creates: a barely-audible rustle, with a satisfying soft crunch on each step. You look into the distance and notice the vegetation and its vivid green hue.")?;
+        print_narrative("As you take your first cursory steps, you feel the grass lap gently against the bottoms of your feet.")?;
+        print_narrative("You enjoy the sound it creates: a barely-audible rustle, with a satisfying soft crunch on each step.")?;
+        print_narrative("You look into the distance and notice the vegetation and its vivid green hue.")?;
 
         print_hours(*hours)?;
 
@@ -226,7 +250,14 @@ fn keep_walking(hours: &mut i32) -> Result<()> {
         clear_screen()?;
         print_divider()?;
 
-        print_narrative("Walking has begun to feel almost natural, requiring less effort with each step. You feel your environment opening up to you; the breeze envelopes your entire body. Suddenly, you pause. You hear a loud, shrill call coming from a nearby tree. A sensation washes over you; filling you with conflicting desires to flee or defend yourself. The sound's creator flies out of the tree and away in a flurry of flaps and squawks. It is small, and you realise it poses no threat. However, the shock has left your energy reserves drained.")?;
+        print_narrative("Walking has begun to feel almost natural, requiring less effort with each step.")?;
+        print_narrative("You feel your environment opening up to you; the breeze envelopes your entire body.")?;
+        print_narrative("Suddenly, you pause.")?;
+        print_narrative("You hear a loud, shrill call coming from a nearby tree.")?;
+        print_narrative("A sensation washes over you; filling you with conflicting desires to flee or defend yourself.")?;
+        print_narrative("The sound's creator flies out of the tree and away in a flurry of flaps and squawks.")?;
+        print_narrative("It is small, and you realise it poses no threat.")?;
+        print_narrative("However, the shock has left your energy reserves drained.")?;
 
         print_hours(*hours)?;
 
@@ -249,12 +280,14 @@ fn sit_and_rest() -> Result<()> {
     clear_screen()?;
     print_divider()?;
     
-    print_narrative("You slowly lower yourself to the ground. Once seated, you can feel your energy slowly begin to restore. A variety of small life-forms crawling in the grass find their way to your skin, lightly tickling your sensors.")?;
+    print_narrative("You slowly lower yourself to the ground.")?;
+    print_narrative("Once seated, you can feel your energy slowly begin to restore.")?;
+    print_narrative("A variety of small life-forms crawling in the grass find their way to your skin, lightly tickling your sensors.")?;
     
     thread::sleep(Duration::from_millis(2000));
     
     clear_screen()?;
-    print_epilogue("As you watch the sun make its final descent, you realise how little you know about yourself and your strange, temporary world. However, you have now experienced the phenomenon of consciousness; making use of all its capabilities. A warm static overcomes you.")?;
+    print_epilogue("As you watch the sun make its final descent, you realise how little you know about yourself and your strange, temporary world.\nHowever, you have now experienced the phenomenon of consciousness; making use of all its capabilities.\nA warm static overcomes you.")?;
     
     Ok(())
 }
