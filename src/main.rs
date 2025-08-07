@@ -9,10 +9,13 @@ use crossterm::{
     terminal::{self, Clear, ClearType},
 };
 
+// Include the display module
+mod display;
 mod narrative;
-use narrative::{
-    clear_screen, print_slowly, print_title, run_game
-};
+
+// Import necessary functions from the display module
+use display::{clear_screen, print_slowly, print_title};
+use narrative::run_game;
 
 fn main() -> Result<()> {
     // Setup terminal
