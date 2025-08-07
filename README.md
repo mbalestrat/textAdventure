@@ -4,12 +4,7 @@ A simple text-based adventure game I wrote about consciousness back in 2017, por
 
 Inspired by InfoCom narrative games from the 80's, I wanted to make a short story about being alive.
 
-## Features
-- **Rich Terminal UI**: Custom colors, ASCII art title, and animated text
-- **Interactive Experience**: Keyboard-driven navigation
-- **Visual Storytelling**: Color-coded messages and gradient effects
-- **Cross-Platform**: Works on macOS, Windows, and Linux
-- **Narrative-Focused**: A philosophical short story about consciousness
+WARNING: This is a buggy alpha! I haven't finished text alignment or proper rendering.
 
 ## How to Run
 

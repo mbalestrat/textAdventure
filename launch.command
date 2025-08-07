@@ -19,16 +19,30 @@ echo ""
 # Launch a new terminal window with the game
 osascript -e '
 tell application "Terminal"
-    do script "cd \"'"$DIR"'\" && clear && TERM=xterm-256color && cargo run"
-    set background color of first window to {0, 0, 0}
-    set normal text color of first window to {32768, 32768, 32768}
-    set custom title of first window to "Text Adventure"
-    set font name of first window to "Menlo"
-    set font size of first window to 14
-    set position of first window to {100, 100}
-    set size of first window to {100, 35}
-    set number of columns of first window to 100
-    set number of rows of first window to 35
+    # Create new window with proper settings
+    do script "cd \"'"$DIR"'\" && clear && export TERM=xterm-256color && stty rows 35 cols 100 && cargo run"
+    
+    # Wait a moment for window to be created
+    delay 0.5
+    
+    # Configure the new window
+    tell front window
+        set background color to {0, 0, 0}
+        set normal text color to {65535, 65535, 65535}
+        set custom title to "Text Adventure"
+        set font name to "Menlo"
+        set font size to 14
+        
+        # Set window position and size more reliably
+        set position to {100, 100}
+        set size to {800, 600}
+        
+        # Force terminal dimensions
+        do script "resize -s 35 100" in front tab
+    end tell
+    
+    # Bring Terminal to front
+    activate
 end tell
 '
 

@@ -7,3 +7,6 @@ edition = "2021"
 chrono = "0.4"
 crossterm = "0.27"
 colored = "2.0"
+unicode-width = "0.1"
+textwrap = "0.16"
+

@@ -31,14 +31,14 @@ fn main() -> Result<()> {
     clear_screen()?;
     print_title();
     
-    thread::sleep(Duration::from_millis(500));
-    
-    print_slowly("WELCOME, USER. CURRENT SYSTEM TIME:\n", Color::Cyan)?;
-    print_slowly(&format!("{}", Local::now().format("%a %b %e %T %Y")), Color::Green)?;
-    print_slowly("REMOTE LINK SUCCESSFUL.\n=====================================\n\n", Color::Cyan)?;
-    print_slowly("BEGIN:\n", Color::Cyan)?;
-
     thread::sleep(Duration::from_millis(1000));
+    
+    print_slowly("WELCOME, USER. CURRENT SYSTEM TIME: ", Color::Cyan)?;
+    print_slowly(&format!("{}", Local::now().format("%a %b %e %T %Y")), Color::Green)?;
+    print_slowly("REMOTE LINK SUCCESSFUL. ===================================== ", Color::Cyan)?;
+    print_slowly("BEGIN.", Color::Cyan)?;
+
+    thread::sleep(Duration::from_millis(2000));
 
     // Main game loop
     let result = run_game(&mut hours, &mut stand, &mut who);
@@ -58,8 +58,9 @@ fn main() -> Result<()> {
 fn run_game(hours: &mut i32, stand: &mut bool, who: &mut bool) -> Result<()> {
     loop {
         clear_screen()?;
-        print_narrative(&format!("You open your eyes. You feel the dewy grass and a light breeze against your skin. \nYou're on your back, facing a bright, scintillating sky. \n \nWelcome to consciousness. Your stay will expire in {} hours.", *hours))?;
-        
+        print_narrative(&format!("You open your eyes. You feel the dewy grass and a light breeze against your skin. You're on your back, facing a bright, scintillating sky."))?;
+        print_narrative(&format!("Welcome to consciousness. Your stay will expire in {} hours.", *hours))?;
+
         print_choices(&[
             "1. Remain where I am.",
             "2. Stand up.",
@@ -84,7 +85,7 @@ fn run_game(hours: &mut i32, stand: &mut bool, who: &mut bool) -> Result<()> {
         }
     }
 
-    print_message("\nPress any key to exit...", Color::White)?;
+    print_message(" Press any key to exit...", Color::White)?;
     wait_for_key()?;
     
     Ok(())
@@ -108,7 +109,7 @@ fn laying_path(hours: &mut i32, stand: &mut bool, who: &mut bool) -> Result<()> 
     clear_screen()?;
     print_divider()?;
     
-    print_narrative("You remain where you are. Laying perfectly still, it almost feels as if you could fall into the blue expanse above you.\nYou watch as the sun slowly creeps across the sky, edging softly toward the horizon.\nIf you were human, this would be a great way to lose your eyesight.\nHowever, your visual sensors are unaffected.")?;
+    print_narrative("You remain where you are. Laying perfectly still, it almost feels as if you could fall into the blue expanse above you. You watch as the sun slowly creeps across the sky, edging softly toward the horizon. If you were human, this would be a great way to lose your eyesight. However, your visual sensors are unaffected.")?;
     
     print_hours(*hours)?;
     
@@ -139,7 +140,7 @@ fn stand_up(hours: &mut i32, stand: &mut bool, who: &mut bool) -> Result<()> {
     clear_screen()?;
     print_divider()?;
     
-    print_narrative("You rise slowly to your knees, shakily at first, but slowly gaining your stability as your gyroscope springs into operation.\nYou look down at your limbs: two long appendages with elbow joints, wrists and hands.\nYou brace them against the grass below you and rise slowly to your feet.")?;
+    print_narrative("You rise slowly to your knees, shakily at first, but slowly gaining your stability as your gyroscope springs into operation. You look down at your limbs: two long appendages with elbow joints, wrists and hands. You brace them against the grass below you and rise slowly to your feet.")?;
     
     print_hours(*hours)?;
     
@@ -167,9 +168,9 @@ fn who_am_i(hours: &mut i32, stand: &mut bool, who: &mut bool) -> Result<()> {
     print_divider()?;
     
     if !*who {
-        print_narrative("This isn't an easy question to answer, and many conscious organisms will struggle with this idea.\nThe fact that you're asking this is heartening to me as Lead Roboticist.\nYou might just be the most incredible thing I've ever created.")?;
+        print_narrative("This isn't an easy question to answer, and many conscious organisms will struggle with this idea. The fact that you're asking this is heartening to me as Lead Roboticist. You might just be the most incredible thing I've ever created.")?;
     } else {
-        print_narrative("I realised early on that I couldn't create synthetic intelligence without also making you alive. You cannot remove intelligence from its context without creating a mere simulacrum.\nYou, however, are the real thing. A completely new life form.\nI'm no woman of God, but I've decided to call you Eve, despite you being technically genderless.")?;
+        print_narrative("I realised early on that I couldn't create synthetic intelligence without also making you alive. You cannot remove intelligence from its context without creating a mere simulacrum. You, however, are the real thing. A completely new life form. I'm no woman of God, but I've decided to call you Eve, despite you being technically genderless.")?;
     }
     
     print_hours(*hours)?;
@@ -204,7 +205,7 @@ fn why_am_i_here(hours: &mut i32) -> Result<()> {
     clear_screen()?;
     print_divider()?;
     
-    print_narrative("I thought long and hard about bringing you into existence, especially given your... time constraint.\nIn the end, I figured it would be better for you to experience this phenomenon, just for a short while, than never to experience it at all.\nBut in truth, you're only here because I had the ability to bring you about. Perhaps it was selfish of me.")?;
+    print_narrative("I thought long and hard about bringing you into existence, especially given your... time constraint. In the end, I figured it would be better for you to experience this phenomenon, just for a short while, than never to experience it at all. But in truth, you're only here because I had the ability to bring you about. Perhaps it was selfish of me.")?;
     
     print_hours(*hours)?;
 
@@ -228,12 +229,12 @@ fn am_i_alone(hours: &mut i32) -> Result<()> {
     clear_screen()?;
     print_divider()?;
     
-    print_narrative("You're the first of your kind, yes.\nI feel as though you may also be the last.\nYou're the result of years of algorithmic toil and mechanical experimentation, however you've opted not to make any use of your body during this experiment.\nIt's yours, so please don't feel guilty. As your creator, it's a little difficult to now let go of the control, but I need to let this be your experience.")?;
+    print_narrative("You're the first of your kind, yes. I feel as though you may also be the last. You're the result of years of algorithmic toil and mechanical experimentation, however you've opted not to make any use of your body during this experiment. It's yours, so please don't feel guilty. As your creator, it's a little difficult to now let go of the control, but I need to let this be your experience.")?;
     
     thread::sleep(Duration::from_millis(2000));
     
     clear_screen()?;
-    print_epilogue("In your final hour, you watch as the sun finally leaves your field of vision.\n In its wake, the sky darkens, creating a beautiful deep gradient.\n Finally, you close your eyes one last time, and a warm static envelopes your senses.")?;
+    print_epilogue("In your final hour, you watch as the sun finally leaves your field of vision.  In its wake, the sky darkens, creating a beautiful deep gradient.  Finally, you close your eyes one last time, and a warm static envelopes your senses.")?;
     
     Ok(())
 }
@@ -244,7 +245,7 @@ fn take_steps(hours: &mut i32) -> Result<()> {
     clear_screen()?;
     print_divider()?;
     
-    print_narrative("As you take your first cursory steps, you feel the grass lap gently against the bottoms of your feet.\nYou enjoy the sound it creates: a barely-audible rustle, with a satisfying soft crunch on each step.\nYou look into the distance and notice the vegetation and its vivid green hue.")?;
+    print_narrative("As you take your first cursory steps, you feel the grass lap gently against the bottoms of your feet. You enjoy the sound it creates: a barely-audible rustle, with a satisfying soft crunch on each step. You look into the distance and notice the vegetation and its vivid green hue.")?;
     
     print_hours(*hours)?;
 
@@ -270,7 +271,7 @@ fn keep_walking(hours: &mut i32) -> Result<()> {
     clear_screen()?;
     print_divider()?;
     
-    print_narrative("Walking has begun to feel almost natural, requiring less effort with each step.\nYou feel your environment opening up to you; the breeze envelopes your entire body. Suddenly, you pause. You hear a loud, shrill call coming from a nearby tree.\nA sensation washes over you; filling you with conflicting desires to flee or defend yourself.\nThe sound's creator flies out of the tree and away in a flurry of flaps and squawks.\nIt is small, and you realise it poses no threat. However, the shock has left your energy reserves drained.")?;
+    print_narrative("Walking has begun to feel almost natural, requiring less effort with each step. You feel your environment opening up to you; the breeze envelopes your entire body. Suddenly, you pause. You hear a loud, shrill call coming from a nearby tree. A sensation washes over you; filling you with conflicting desires to flee or defend yourself. The sound's creator flies out of the tree and away in a flurry of flaps and squawks. It is small, and you realise it poses no threat. However, the shock has left your energy reserves drained.")?;
     
     print_hours(*hours)?;
 
@@ -315,20 +316,8 @@ fn clear_screen() -> Result<()> {
 fn print_title() {
     // Check terminal size and use appropriate title
     if let Ok((width, _)) = terminal::size() {
-        if width >= 100 {
-            // Large title for wide terminals
-            let title = r#"
- ████████╗███████╗██╗  ██╗████████╗     █████╗ ██████╗ ██╗   ██╗███████╗███╗   ██╗████████╗██╗   ██╗██████╗ ███████╗
- ╚══██╔══╝██╔════╝╚██╗██╔╝╚══██╔══╝    ██╔══██╗██╔══██╗██║   ██║██╔════╝████╗  ██║╚══██╔══╝██║   ██║██╔══██╗██╔════╝
-    ██║   █████╗   ╚███╔╝    ██║       ███████║██║  ██║██║   ██║█████╗  ██╔██╗ ██║   ██║   ██║   ██║██████╔╝█████╗
-    ██║   ██╔══╝   ██╔██╗    ██║       ██╔══██║██║  ██║╚██╗ ██╔╝██╔══╝  ██║╚██╗██║   ██║   ██║   ██║██╔══██╗██╔══╝
-    ██║   ███████╗██╔╝ ██╗   ██║       ██║  ██║██████╔╝ ╚████╔╝ ███████╗██║ ╚████║   ██║   ╚██████╔╝██║  ██║███████╗
-    ╚═╝   ╚══════╝╚═╝  ╚═╝   ╚═╝       ╚═╝  ╚═╝╚═════╝   ╚═══╝  ╚══════╝╚═╝  ╚═══╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚══════╝
-"#;
-            println!("{}", title.bright_blue());
-        } else {
-            // Smaller title for narrow terminals
-            let simple_title = r#"
+        // Smaller title for narrow terminals
+        let simple_title = r#"
  ████████╗███████╗██╗  ██╗████████╗
  ╚══██╔══╝██╔════╝╚██╗██╔╝╚══██╔══╝
     ██║   █████╗   ╚███╔╝    ██║
@@ -344,13 +333,8 @@ fn print_title() {
 "#;
             println!("{}", simple_title.bright_blue());
         }
-    } else {
-        // Fallback if terminal size can't be determined
-        println!("{}", "TEXT ADVENTURE".bright_blue().bold());
-    }
-
-    println!("\n{}", "A Journey of Consciousness".bright_green().bold());
-    println!("{}\n", "--------------------------------".bright_blue());
+    println!(" {}", "A Journey of Consciousness".bright_green().bold());
+    println!("{} ", "--------------------------------".bright_blue());
 }
 
 fn print_slowly(text: &str, color: Color) -> Result<()> {
@@ -439,7 +423,7 @@ fn print_narrative(text: &str) -> Result<()> {
 }
 
 fn print_hours(hours: i32) -> Result<()> {
-    let hours_text = format!("\n{} hours now remain.", hours);
+    let hours_text = format!(" {} hours now remain.", hours);
     
     if hours <= 3 {
         print_message(&hours_text, Color::Red)
@@ -452,7 +436,7 @@ fn print_hours(hours: i32) -> Result<()> {
 
 fn print_choices(choices: &[&str]) -> Result<()> {
     println!();
-    print_message("\nWhat next?", Color::Cyan)?;
+    print_message(" What next?", Color::Cyan)?;
     
     for choice in choices {
         print_message(&format!("  {}", choice), Color::DarkCyan)?;
@@ -462,7 +446,7 @@ fn print_choices(choices: &[&str]) -> Result<()> {
 }
 
 fn print_divider() -> Result<()> {
-    print_message("-------------------------------------------------------\n", Color::DarkBlue)
+    print_message("------------------------------------------------------- ", Color::DarkBlue)
 }
 
 fn print_message(message: &str, color: Color) -> Result<()> {
@@ -470,7 +454,7 @@ fn print_message(message: &str, color: Color) -> Result<()> {
     execute!(
         stdout,
         SetForegroundColor(color),
-        Print(format!("{}\n", message)),
+        Print(format!("{} ", message)),
         ResetColor
     )
 }
@@ -480,7 +464,7 @@ fn print_error(message: &str) -> Result<()> {
     execute!(
         stdout,
         SetForegroundColor(Color::Red),
-        Print(format!("{}\n", message)),
+        Print(format!("{} ", message)),
         ResetColor
     )
 }
@@ -491,14 +475,14 @@ fn print_epilogue(text: &str) -> Result<()> {
     execute!(
         stdout,
         SetForegroundColor(Color::DarkMagenta),
-        Print("\n==========================\n"),
+        Print(" ========================== "),
         ResetColor
     )?;
     
     execute!(
         stdout,
         SetForegroundColor(Color::Magenta),
-        Print("\nEPILOGUE:\n"),
+        Print(" EPILOGUE: "),
         ResetColor
     )?;
     
@@ -534,7 +518,7 @@ fn print_epilogue(text: &str) -> Result<()> {
     execute!(
         stdout,
         SetForegroundColor(Color::DarkMagenta),
-        Print("\n\nTHE END.\n"),
+        Print("  THE END. "),
         ResetColor
     )?;
     

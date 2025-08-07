@@ -1,0 +1,15 @@
+tell application "Terminal"
+    set w to do script "cd \"/Users/mielba/Documents/textAdventure\" && clear && COLUMNS=80 LINES=25 TERM=xterm-256color cargo run; exit"
+
+    set background color of w to {0, 0, 0}
+    set normal text color of w to {32768, 32768, 32768}
+    set custom title of w to "Text Adventure"
+    set font name of w to "Menlo"
+    set font size of w to 14
+
+    set position of window 1 to {100, 100}
+    set size of window 1 to {800, 600}
+
+    set w's background color to {0, 0, 0}
+    set w's normal text color to {32768, 32768, 32768}
+end tell
