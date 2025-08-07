@@ -376,12 +376,16 @@ pub fn print_narrative(text: &str) -> Result<()> {
         Err(_) => 80, // Default to 80 if we can't determine width
     };
 
-    let max_line_length = term_width.saturating_sub(2); // Allow for margins
+    let max_line_length = term_width.saturating_sub(6); // Allow for margins and indentation
+    let indent = 2; // Number of spaces to indent each line
 
     for line in lines {
         let mut stdout = io::stdout();
+
+        // Set indentation for each line
         execute!(
             stdout,
+            cursor::MoveToColumn(indent),
             SetForegroundColor(Color::White)
         )?;
 
@@ -400,6 +404,8 @@ pub fn print_narrative(text: &str) -> Result<()> {
                         thread::sleep(Duration::from_millis(15));
                     }
                     println!();
+                    // Set indentation for continuation line
+                    execute!(stdout, cursor::MoveToColumn(indent + 2))?; // Additional indent for wrapped lines
                     current_line = word.to_string();
                 } else {
                     // Add word to current line
@@ -426,7 +432,7 @@ pub fn print_narrative(text: &str) -> Result<()> {
                 stdout.flush()?;
                 thread::sleep(Duration::from_millis(15));
             }
-            std::print!("\n");
+            println!();
          }
     }
 
@@ -483,48 +489,65 @@ pub fn print_error(message: &str) -> Result<()> {
 
 pub fn print_epilogue(text: &str) -> Result<()> {
     let mut stdout = io::stdout();
-    
+    let indent = 2; // Number of spaces to indent each line
+
     execute!(
         stdout,
         SetForegroundColor(Color::DarkMagenta),
         Print(" ========================== "),
         ResetColor
     )?;
-    
+
     execute!(
         stdout,
         SetForegroundColor(Color::Magenta),
         Print(" EPILOGUE: "),
         ResetColor
     )?;
-    
+
+    println!();
+
     // Print the epilogue text character by character with a cool color gradient
     let colors = [
-        Color::Blue, 
-        Color::Cyan, 
-        Color::Green, 
-        Color::Yellow, 
+        Color::Blue,
+        Color::Cyan,
+        Color::Green,
+        Color::Yellow,
         Color::DarkYellow,
         Color::Magenta
     ];
-    
-    let chars: Vec<char> = text.chars().collect();
-    let total_chars = chars.len();
-    
-    for (i, c) in chars.iter().enumerate() {
-        // Calculate color index based on position in text
-        let color_idx = (i * colors.len()) / total_chars;
-        let color = colors[color_idx];
-        
+
+    // Split text by newlines so we can handle each line separately
+    let lines = text.split('\n');
+
+    for line in lines {
+        // Move to the indented position
         execute!(
             stdout,
-            SetForegroundColor(color),
-            Print(c),
-            ResetColor
+            cursor::MoveToColumn(indent)
         )?;
-        
-        stdout.flush()?;
-        thread::sleep(Duration::from_millis(30));
+
+        let chars: Vec<char> = line.chars().collect();
+        let total_chars = chars.len();
+
+        for (i, c) in chars.iter().enumerate() {
+            // Calculate color index based on position in text
+            let color_idx = (i * colors.len()) / total_chars;
+            let color = colors[color_idx];
+
+            execute!(
+                stdout,
+                SetForegroundColor(color),
+                Print(c),
+                ResetColor
+            )?;
+
+            stdout.flush()?;
+            thread::sleep(Duration::from_millis(30));
+        }
+
+        // New line after each line of text
+        println!();
     }
     
     execute!(
