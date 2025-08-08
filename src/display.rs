@@ -7,7 +7,7 @@ use crossterm::{
     cursor,
     event::{self, Event, KeyCode},
     execute,
-    style::{Color, Print, ResetColor, SetForegroundColor, SetBackgroundColor},
+    style::{Color, Print, ResetColor, SetForegroundColor},
     terminal::{self, Clear, ClearType},
 };
 
@@ -326,35 +326,64 @@ pub fn wait_for_key() -> Result<()> {
     Ok(())
 }
 
-// Terminal flicker effects
-
-// Basic screen flicker effect
-pub fn screen_flicker() -> Result<()> {
+pub fn print_ending_screen() -> Result<()> {
+    let indent = 2; // Consistent with narrative text indentation
     let mut stdout = io::stdout();
-    // No random number generation needed for this effect
 
-    // Quick flash (white background)
-    execute!(
-        stdout,
-        SetBackgroundColor(Color::White),
-        Clear(ClearType::All),
-        ResetColor
-    )?;
+    // Clear the screen first
+    clear_screen()?;
 
-    // Brief pause
-    thread::sleep(Duration::from_millis(50));
+    // Add some spacing
+    println!("\n\n");
 
-    // Return to normal
-    execute!(
-        stdout,
-        Clear(ClearType::All)
-    )?;
+    // Display the SYN-TEC logo in a different color
+    execute!(stdout, cursor::MoveToColumn(indent)).unwrap();
+    println!("{}", "   ███████╗ ██╗   ██╗ ███╗   ██╗       ████████╗ ███████╗  ██████╗ ".bright_magenta());
+    execute!(stdout, cursor::MoveToColumn(indent)).unwrap();
+    println!("{}", "   ██╔════╝ ╚██╗ ██╔╝ ████╗  ██║       ╚══██╔══╝ ██╔════╝ ██╔════╝ ".bright_magenta());
+    execute!(stdout, cursor::MoveToColumn(indent)).unwrap();
+    println!("{}", "   ███████╗  ╚████╔╝  ██╔██╗ ██║ █████╗   ██║    █████╗   ██║      ".bright_magenta());
+    execute!(stdout, cursor::MoveToColumn(indent)).unwrap();
+    println!("{}", "   ╚════██║   ╚██╔╝   ██║╚██╗██║ ╚════╝   ██║    ██╔══╝   ██║      ".bright_magenta());
+    execute!(stdout, cursor::MoveToColumn(indent)).unwrap();
+    println!("{}", "   ███████║    ██║    ██║ ╚████║          ██║    ███████╗ ╚██████╗ ".bright_magenta());
+    execute!(stdout, cursor::MoveToColumn(indent)).unwrap();
+    println!("{}", "   ╚══════╝    ╚═╝    ╚═╝  ╚═══╝          ╚═╝    ╚══════╝  ╚═════╝ ".bright_magenta());
 
-    // The screen is now clear, caller will need to redraw content
+    // Add text below
+    println!("\n");
+    execute!(stdout, cursor::MoveToColumn(indent)).unwrap();
+    println!("{}", "C O N S C I O U S N E S S   T E R M I N A T E D".bright_red());
+
+    // Add separator
+    println!();
+    execute!(stdout, cursor::MoveToColumn(indent)).unwrap();
+    println!("{}", "═════════════════════════════════════════════════════════════".bright_cyan());
+
+    // Add connection information
+    println!();
+    execute!(stdout, cursor::MoveToColumn(indent)).unwrap();
+    println!("{}", "SYN-TEC INDUSTRIES - SYNTHETIC LIFE EXPERIMENT V1.0 (BETA)".bright_white());
+
+    execute!(stdout, cursor::MoveToColumn(indent)).unwrap();
+    println!("{}", "CONNECTION TERMINATED - SESSION LOGS ARCHIVED".bright_white());
+
+    // Add date and time
+    println!();
+    execute!(stdout, cursor::MoveToColumn(indent)).unwrap();
+    let timestamp = chrono::Local::now().format("%Y-%m-%d %H:%M:%S").to_string();
+    println!("{}", format!("SYSTEM TIME: {}", timestamp).bright_green());
+
+    execute!(stdout, cursor::MoveToColumn(indent)).unwrap();
+    println!("{}", "Press any key to exit...".bright_white());
+
+    // Wait for a key press
+    wait_for_key()?;
 
     Ok(())
 }
 
+// Terminal flicker effects
 // Lighter flicker that just flashes specific characters
 pub fn light_flicker() -> Result<()> {
     let mut stdout = io::stdout();
@@ -392,62 +421,17 @@ pub fn light_flicker() -> Result<()> {
     Ok(())
 }
 
-// More intense flicker with color and multiple flashes
-pub fn system_glitch() -> Result<()> {
-    let mut stdout = io::stdout();
-    let mut rng = rand::thread_rng();
-
-    // Number of flashes
-    let num_flashes = rng.gen_range(2..4);
-
-    for _ in 0..num_flashes {
-        // Determine color for this flash
-        let color = match rng.gen_range(0..3) {
-            0 => Color::Red,
-            1 => Color::Blue,
-            _ => Color::DarkMagenta,
-        };
-
-        // Flash the screen
-        execute!(
-            stdout,
-            SetBackgroundColor(color),
-            Clear(ClearType::All),
-            ResetColor
-        )?;
-
-        // Brief pause
-        thread::sleep(Duration::from_millis(30));
-
-        // Return to normal
-        execute!(
-            stdout,
-            Clear(ClearType::All)
-        )?;
-
-        thread::sleep(Duration::from_millis(20));
-    }
-
-    // The screen is now clear, caller will need to redraw content
-
-    Ok(())
-}
-
-// Main function that randomly decides whether to flicker and which type to use
+// Main function that randomly decides whether to flicker
 pub fn random_flicker_check() -> Result<()> {
     let mut rng = rand::thread_rng();
 
     // 5% chance of a flicker effect occurring
     if rng.gen_bool(0.05) {
-        match rng.gen_range(0..10) {
-            0 => screen_flicker()?, // 10% chance for full screen flicker
-            1 => system_glitch()?,  // 10% chance for system glitch
-            2..=6 => light_flicker()?, // 50% chance for light flicker
-            _ => () // 30% chance for no effect
-        }
+        // Only use the light flicker effect
+        light_flicker()?;
 
-        // Need to redraw the screen after a flicker
-        clear_screen()?;
+        // No need to clear the screen after a light flicker
+        // as it doesn't disrupt the whole display
     }
 
     Ok(())
