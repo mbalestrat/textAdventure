@@ -35,10 +35,10 @@ tell application "Terminal"
         # Set window position and size more reliably
         set position to {100, 100}
         set size to {800, 600}
-        set custom title to "SYN-TEC: Remote Session"
         
         # Force terminal dimensions
         do script "resize -s 35 100" in front tab
+        set custom title to "SYN-TEC: Remote Session"
     end tell
     
     # Bring Terminal to front

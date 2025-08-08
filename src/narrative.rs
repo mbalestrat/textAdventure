@@ -147,7 +147,7 @@ fn who_am_i(hours: &mut i32, stand: &mut bool, who: &mut bool) -> Result<()> {
             // Random flicker during the response
             random_flicker_check()?;
 
-            print_narrative("The fact that you're asking this is heartening to me as Lead Roboticist.")?;
+            print_narrative("The fact that you're asking this is heartening to me.")?;
             print_narrative("You might just be the most incredible thing I've ever created.")?;
 
             // Higher chance of light flicker at this emotional moment

@@ -41,7 +41,7 @@ fn main() -> Result<()> {
     
     print_slowly("WELCOME, USER. CURRENT SYSTEM TIME: ", Color::Cyan)?;
     print_slowly(&format!("{}", Local::now().format("%a %b %e %T %Y")), Color::Green)?;
-    print_slowly("REMOTE LINK SUCCESSFUL. ===================================== ", Color::Cyan)?;
+    print_slowly("ESTABLISHING REMOTE LINK ===================================== ", Color::Cyan)?;
     print_slowly("BEGIN.", Color::Cyan)?;
 
     thread::sleep(Duration::from_millis(2000));
