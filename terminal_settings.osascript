@@ -1,6 +1,6 @@
 tell application "Terminal"
     set w to do script "cd \"$DIR\" && clear && COLUMNS=80 LINES=25 TERM=xterm-256color cargo run; exit"
-
+    set title to "SYN-TEC: Remote Session"
     set background color of w to {0, 0, 0}
     set normal text color of w to {32768, 32768, 32768}
     set custom title of w to "Text Adventure"

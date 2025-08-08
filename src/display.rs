@@ -309,7 +309,7 @@ pub fn print_epilogue(text: &str) -> Result<()> {
     execute!(
         stdout,
         SetForegroundColor(Color::DarkMagenta),
-        Print("  THE END. "),
+        Print("  CONNECTION LOST. "),
         ResetColor
     )?;
     

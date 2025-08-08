@@ -9,11 +9,11 @@ cd "$DIR"
 # Clear terminal and display a launching message
 clear
 echo "================================"
-echo "   Launching Text Adventure..."
+echo "   Launching Terminal Link..."
 echo "================================"
 echo ""
-echo "A new terminal window will open with the game."
-echo "Close that window to exit the game."
+echo "A new terminal window will open soon."
+echo "Close that window to terminate your session."
 echo ""
 
 # Launch a new terminal window with the game
@@ -29,13 +29,13 @@ tell application "Terminal"
     tell front window
         set background color to {0, 0, 0}
         set normal text color to {65535, 65535, 65535}
-        set custom title to "Text Adventure"
         set font name to "Menlo"
         set font size to 14
         
         # Set window position and size more reliably
         set position to {100, 100}
         set size to {800, 600}
+        set custom title to "SYN-TEC: Remote Session"
         
         # Force terminal dimensions
         do script "resize -s 35 100" in front tab
@@ -46,4 +46,4 @@ tell application "Terminal"
 end tell
 '
 
-echo "Game launched successfully!"
+echo "Connection established."
