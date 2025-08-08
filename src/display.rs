@@ -2,11 +2,12 @@ use std::io::{self, Result, Write};
 use std::thread;
 use std::time::Duration;
 use colored::*;
+use rand::Rng;
 use crossterm::{
     cursor,
     event::{self, Event, KeyCode},
     execute,
-    style::{Color, Print, ResetColor, SetForegroundColor},
+    style::{Color, Print, ResetColor, SetForegroundColor, SetBackgroundColor},
     terminal::{self, Clear, ClearType},
 };
 
@@ -322,5 +323,132 @@ pub fn wait_for_key() -> Result<()> {
             break;
         }
     }
+    Ok(())
+}
+
+// Terminal flicker effects
+
+// Basic screen flicker effect
+pub fn screen_flicker() -> Result<()> {
+    let mut stdout = io::stdout();
+    // No random number generation needed for this effect
+
+    // Quick flash (white background)
+    execute!(
+        stdout,
+        SetBackgroundColor(Color::White),
+        Clear(ClearType::All),
+        ResetColor
+    )?;
+
+    // Brief pause
+    thread::sleep(Duration::from_millis(50));
+
+    // Return to normal
+    execute!(
+        stdout,
+        Clear(ClearType::All)
+    )?;
+
+    // The screen is now clear, caller will need to redraw content
+
+    Ok(())
+}
+
+// Lighter flicker that just flashes specific characters
+pub fn light_flicker() -> Result<()> {
+    let mut stdout = io::stdout();
+    let mut rng = rand::thread_rng();
+    let (cols, rows) = terminal::size()?;
+
+    // Number of characters to flicker
+    let num_flickers = rng.gen_range(3..10);
+
+    // Flicker random characters on screen
+    for _ in 0..num_flickers {
+        let x = rng.gen_range(0..cols);
+        let y = rng.gen_range(0..rows);
+        let flicker_char = match rng.gen_range(0..4) {
+            0 => '█',
+            1 => '▓',
+            2 => '▒',
+            _ => '░',
+        };
+
+        execute!(
+            stdout,
+            cursor::MoveTo(x, y),
+            SetForegroundColor(Color::White),
+            Print(flicker_char),
+            ResetColor
+        )?;
+    }
+
+    // Short pause to see the flicker
+    thread::sleep(Duration::from_millis(50));
+
+    // Caller will need to redraw content
+
+    Ok(())
+}
+
+// More intense flicker with color and multiple flashes
+pub fn system_glitch() -> Result<()> {
+    let mut stdout = io::stdout();
+    let mut rng = rand::thread_rng();
+
+    // Number of flashes
+    let num_flashes = rng.gen_range(2..4);
+
+    for _ in 0..num_flashes {
+        // Determine color for this flash
+        let color = match rng.gen_range(0..3) {
+            0 => Color::Red,
+            1 => Color::Blue,
+            _ => Color::DarkMagenta,
+        };
+
+        // Flash the screen
+        execute!(
+            stdout,
+            SetBackgroundColor(color),
+            Clear(ClearType::All),
+            ResetColor
+        )?;
+
+        // Brief pause
+        thread::sleep(Duration::from_millis(30));
+
+        // Return to normal
+        execute!(
+            stdout,
+            Clear(ClearType::All)
+        )?;
+
+        thread::sleep(Duration::from_millis(20));
+    }
+
+    // The screen is now clear, caller will need to redraw content
+
+    Ok(())
+}
+
+// Main function that randomly decides whether to flicker and which type to use
+pub fn random_flicker_check() -> Result<()> {
+    let mut rng = rand::thread_rng();
+
+    // 5% chance of a flicker effect occurring
+    if rng.gen_bool(0.05) {
+        match rng.gen_range(0..10) {
+            0 => screen_flicker()?, // 10% chance for full screen flicker
+            1 => system_glitch()?,  // 10% chance for system glitch
+            2..=6 => light_flicker()?, // 50% chance for light flicker
+            _ => () // 30% chance for no effect
+        }
+
+        // Need to redraw the screen after a flicker
+        clear_screen()?;
+    }
+
     Ok(())
 }

@@ -2,20 +2,36 @@ use std::io::Result;
 use std::thread;
 use std::time::Duration;
 use crossterm::style::Color;
+use rand::Rng;
 
 // Import display functions from the display module
 use crate::display::{
-    clear_screen, get_choice, print_choices, print_divider, print_error, 
-    print_epilogue, print_hours, print_message, print_narrative, wait_for_key
+    clear_screen, get_choice, print_choices, print_divider, print_error,
+    print_epilogue, print_hours, print_message, print_narrative, wait_for_key,
+    random_flicker_check, screen_flicker, system_glitch, light_flicker
 };
 
 // Game path functions
 pub fn run_game(hours: &mut i32, stand: &mut bool, who: &mut bool) -> Result<()> {
     loop {
         clear_screen()?;
+
+        // Check for random flicker before the narrative begins
+        random_flicker_check()?;
+
         print_narrative("You open your eyes.")?;
         print_narrative("You feel the dewy grass and a light breeze against your skin.")?;
         print_narrative("You're on your back, facing a bright, scintillating sky.")?;
+
+        // Small chance for a light flicker after the initial descriptions
+        if rand::thread_rng().gen_bool(0.3) { // 30% chance
+            light_flicker()?;
+            clear_screen()?;
+            print_narrative("You open your eyes.")?;
+            print_narrative("You feel the dewy grass and a light breeze against your skin.")?;
+            print_narrative("You're on your back, facing a bright, scintillating sky.")?;
+        }
+
         print_narrative("Welcome to consciousness.")?;
         print_narrative(&format!("Your stay will expire in {} hours.", *hours))?;
 
@@ -120,17 +136,39 @@ fn stand_up(hours: &mut i32, stand: &mut bool, who: &mut bool) -> Result<()> {
 fn who_am_i(hours: &mut i32, stand: &mut bool, who: &mut bool) -> Result<()> {
     *hours -= 2;
 
+    // System glitch effect as you ask about your identity
+    // This is a significant moment in the story
+    system_glitch()?;
+
     loop {
         clear_screen()?;
         print_divider()?;
 
         if !*who {
             print_narrative("This isn't an easy question to answer, and many conscious organisms will struggle with this idea.")?;
+
+            // Random flicker during the response
+            random_flicker_check()?;
+
             print_narrative("The fact that you're asking this is heartening to me as Lead Roboticist.")?;
             print_narrative("You might just be the most incredible thing I've ever created.")?;
+
+            // Higher chance of light flicker at this emotional moment
+            if rand::thread_rng().gen_bool(0.4) { // 40% chance
+                light_flicker()?;
+                clear_screen()?;
+                print_divider()?;
+                print_narrative("This isn't an easy question to answer, and many conscious organisms will struggle with this idea.")?;
+                print_narrative("The fact that you're asking this is heartening to me as Lead Roboticist.")?;
+                print_narrative("You might just be the most incredible thing I've ever created.")?;
+            }
         } else {
             print_narrative("I realised early on that I couldn't create synthetic intelligence without also making you alive.")?;
             print_narrative("You cannot remove intelligence from its context without creating a mere simulacrum.")?;
+
+            // Random flicker check as the conversation gets more philosophical
+            random_flicker_check()?;
+
             print_narrative("You, however, are the real thing.")?;
             print_narrative("A completely new life form.")?;
             print_narrative("I'm no woman of God, but I've decided to call you Eve, despite you being technically genderless.")?;
@@ -194,21 +232,46 @@ fn why_am_i_here(hours: &mut i32) -> Result<()> {
 
 fn am_i_alone(hours: &mut i32) -> Result<()> {
     *hours -= 2;
-    
+
+    // System glitch when asking existential questions
+    system_glitch()?;
+
     clear_screen()?;
     print_divider()?;
-    
+
     print_narrative("You're the first of your kind, yes.")?;
     print_narrative("I feel as though you may also be the last.")?;
+
+    // Random flicker check
+    random_flicker_check()?;
+
     print_narrative("You're the result of years of algorithmic toil and mechanical experimentation, however you've opted not to make any use of your body during this experiment.")?;
     print_narrative("It's yours, so please don't feel guilty.")?;
     print_narrative("As your creator, it's a little difficult to now let go of the control, but I need to let this be your experience.")?;
-    
+
+    // Higher chance of light flicker at emotional moments
+    if rand::thread_rng().gen_bool(0.6) { // 60% chance
+        light_flicker()?;
+        clear_screen()?;
+        print_divider()?;
+        print_narrative("You're the first of your kind, yes.")?;
+        print_narrative("I feel as though you may also be the last.")?;
+        print_narrative("You're the result of years of algorithmic toil and mechanical experimentation, however you've opted not to make any use of your body during this experiment.")?;
+        print_narrative("It's yours, so please don't feel guilty.")?;
+        print_narrative("As your creator, it's a little difficult to now let go of the control, but I need to let this be your experience.")?;
+    }
+
     thread::sleep(Duration::from_millis(2000));
-    
+
+    // System glitch as consciousness begins to fade
+    system_glitch()?;
+
     clear_screen()?;
     print_epilogue("In your final hour, you watch as the sun finally leaves your field of vision.\nIn its wake, the sky darkens, creating a beautiful deep gradient.\nFinally, you close your eyes one last time, and a warm static envelopes your senses.")?;
-    
+
+    // Final flicker effect as connection is lost
+    screen_flicker()?;
+
     Ok(())
 }
 
@@ -278,17 +341,40 @@ fn keep_walking(hours: &mut i32) -> Result<()> {
 fn sit_and_rest() -> Result<()> {
     clear_screen()?;
     print_divider()?;
-    
+
     print_narrative("You slowly lower yourself to the ground.")?;
     print_narrative("Once seated, you can feel your energy slowly begin to restore.")?;
     print_narrative("A variety of small life-forms crawling in the grass find their way to your skin, lightly tickling your sensors.")?;
-    
+
+    // Random light flicker as you rest
+    if rand::thread_rng().gen_bool(0.7) { // 70% chance to see this effect
+        light_flicker()?;
+        clear_screen()?;
+        print_divider()?;
+        print_narrative("You slowly lower yourself to the ground.")?;
+        print_narrative("Once seated, you can feel your energy slowly begin to restore.")?;
+        print_narrative("A variety of small life-forms crawling in the grass find their way to your skin, lightly tickling your sensors.")?;
+    }
+
     thread::sleep(Duration::from_millis(2000));
-    
+
+    // More dramatic system glitch as consciousness starts to fade
+    system_glitch()?;
+
     clear_screen()?;
     print_epilogue("As you watch the sun make its final descent, you realise how little you know about yourself and your strange, temporary world.")?;
     print_epilogue("However, you have now experienced the phenomenon of consciousness; making use of all its capabilities.")?;
+
+    // One more light flicker before the end
+    light_flicker()?;
+    thread::sleep(Duration::from_millis(500));
+
     print_epilogue("A warm static overcomes you.")?;
+
+    // Final system glitch as connection is lost
+    system_glitch()?;
+    screen_flicker()?;
+
     print_epilogue("ERROR: CONNECTION LOST")?;
     Ok(())
 }
