@@ -50,13 +50,13 @@ pub fn print_title() {
     let indent = 2; // Consistent with narrative text indentation
     let mut stdout = io::stdout();
 
-    // Check terminal size and use appropriate title
-    if let Ok((_, _)) = terminal::size() {
-        // Apply scan lines effect for CRT look
-        crt_effects::draw_scan_lines(PhosphorType::Green).unwrap_or(());
+    // Apply scan lines effect for CRT look
+    crt_effects::draw_scan_lines(PhosphorType::Green).unwrap_or(());
 
+    // First show the logo (SYN-TEC ASCII art)
+    println!(); // Extra spacing at the top
+    if let Ok((_, _)) = terminal::size() {
         // Simple text-based title for "SYN-TEC"
-        println!(""); // Empty line for spacing
         execute!(stdout, cursor::MoveToColumn(indent)).unwrap();
         println!("{}", "   ███████╗ ██╗   ██╗ ███╗   ██╗       ████████╗ ███████╗  ██████╗ ".bright_blue());
         execute!(stdout, cursor::MoveToColumn(indent)).unwrap();
@@ -72,24 +72,25 @@ pub fn print_title() {
 
         // Add random phosphor noise around the logo for authentic CRT look
         let mut rng = rand::thread_rng();
-        if rng.gen_bool(0.8) { // 80% chance of noise
-            crt_effects::phosphor_noise(indent as u16, 1, 80, 6, PhosphorType::Blue, 0.03).unwrap_or(());
+        if rng.gen_bool(0.2) { // 80% chance of noise
+            let logo_y_position = 1; // Approximate line where logo starts
+            crt_effects::phosphor_noise(indent as u16, logo_y_position, 80, 6, PhosphorType::Blue, 0.03).unwrap_or(());
         }
     }
 
-    // Initializing text with proper indentation and phosphor glow
-    let init_text = "Initialising...";
+    println!(); // Spacing after logo
+
+    // Second, print the initializing text with phosphor glow
     let y_pos = match cursor::position() {
         Ok((_, y)) => y,
-        Err(_) => 10,
+        Err(_) => 9, // Default position if cursor position can't be determined
     };
 
+    let init_text = "Initialising...";
     crt_effects::print_with_phosphor(init_text, indent as u16, y_pos, PhosphorType::Green, 50).unwrap_or(());
-    println!();
 
-    // Divider with proper indentation
-    execute!(stdout, cursor::MoveToColumn(indent)).unwrap();
-    println!("{}", "--------------------------------".bright_blue());
+    // No divider here as per requested sequence
+    println!(); // Just add spacing after initialization text
 }
 
 pub fn print_slowly(text: &str, color: Color) -> Result<()> {
@@ -239,11 +240,12 @@ pub fn print_choices(choices: &[&str]) -> Result<()> {
 }
 
 pub fn print_divider() -> Result<()> {
-    println!();
+    println!(); // Space before divider
     let mut stdout = io::stdout();
     execute!(stdout, cursor::MoveToColumn(0))?; // Divider starts at column 0
     print_message("------------------------------------------------------- ", Color::DarkBlue)?;
     println!();
+    println!(); // Extra space after divider
     Ok(())
 }
 

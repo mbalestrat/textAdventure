@@ -2,6 +2,7 @@ use std::io::{self, Result};
 use std::thread;
 use std::time::Duration;
 use chrono::Local;
+use colored::*;
 use crossterm::{
     cursor,
     execute,
@@ -48,19 +49,28 @@ fn main() -> Result<()> {
     thread::sleep(Duration::from_millis(1000));
 
     // Welcome message with phosphor persistence effect
-    print_slowly_with_phosphor("WELCOME, USER. CURRENT SYSTEM TIME: ", 2, 10, PhosphorType::Green, 30)?;
+    print_slowly_with_phosphor("WELCOME, USER. CURRENT SYSTEM TIME: ", 2, 11, PhosphorType::Green, 30)?;
 
     let time_str = format!("{}", Local::now().format("%a %b %e %T %Y"));
-    print_slowly_with_phosphor(&time_str, 2, 11, PhosphorType::Blue, 30)?;
+    print_slowly_with_phosphor(&time_str, 2, 12, PhosphorType::Blue, 30)?;
 
     // Modem-like connection sound for establishing link
-    print_slowly_with_phosphor("ESTABLISHING REMOTE LINK ", 2, 13, PhosphorType::Green, 30)?;
+    print_slowly_with_phosphor("ESTABLISHING REMOTE LINK ", 2, 14, PhosphorType::Green, 30)?;
     connection_sound()?;
-    print_slowly_with_phosphor("===================================== ", 25, 13, PhosphorType::Green, 10)?;
+    print_slowly_with_phosphor("===================================== ", 25, 14, PhosphorType::Green, 10)?;
 
-    // Success beep when connection is complete
+    // Print divider after connection messages
+    println!("\n");
+    let mut stdout = io::stdout();
+    execute!(
+        stdout,
+        cursor::MoveToColumn(2)
+    )?;
+    println!("{}", "--------------------------------".bright_blue());
+
+    // Success beep when connection is complete (after divider)
     beep()?;
-    print_slowly_with_phosphor("BEGIN.", 2, 15, PhosphorType::Amber, 50)?;
+    print_slowly_with_phosphor("BEGIN.", 2, 18, PhosphorType::Amber, 50)?;
 
     thread::sleep(Duration::from_millis(2000));
 
