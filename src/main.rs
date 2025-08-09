@@ -9,13 +9,15 @@ use crossterm::{
     terminal::{self, Clear, ClearType},
 };
 
-// Include the display module
+// Include project modules
 mod display;
 mod narrative;
+mod sound;
 
-// Import necessary functions from the display module
+// Import necessary functions from modules
 use display::{clear_screen, print_slowly, print_title};
 use narrative::run_game;
+use sound::{beep, connection_sound, boot_sound};
 
 fn main() -> Result<()> {
     // Setup terminal
@@ -35,13 +37,23 @@ fn main() -> Result<()> {
 
     // Introduction
     clear_screen()?;
+
+    // Classic PC XT boot sound
+    boot_sound()?;
     print_title();
-    
+
     thread::sleep(Duration::from_millis(1000));
-    
+
     print_slowly("WELCOME, USER. CURRENT SYSTEM TIME: ", Color::Cyan)?;
     print_slowly(&format!("{}", Local::now().format("%a %b %e %T %Y")), Color::Green)?;
-    print_slowly("ESTABLISHING REMOTE LINK ===================================== ", Color::Cyan)?;
+
+    // Modem-like connection sound for establishing link
+    print_slowly("ESTABLISHING REMOTE LINK ", Color::Cyan)?;
+    connection_sound()?;
+    print_slowly("===================================== ", Color::Cyan)?;
+
+    // Success beep when connection is complete
+    beep()?;
     print_slowly("BEGIN.", Color::Cyan)?;
 
     thread::sleep(Duration::from_millis(2000));

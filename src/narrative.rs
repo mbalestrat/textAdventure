@@ -4,12 +4,13 @@ use std::time::Duration;
 use crossterm::style::Color;
 use rand::Rng;
 
-// Import display functions from the display module
+// Import functions from modules
 use crate::display::{
     clear_screen, get_choice, print_choices, print_divider, print_error,
     print_epilogue, print_hours, print_message, print_narrative, wait_for_key,
     random_flicker_check, light_flicker, print_ending_screen
 };
+use crate::sound;
 
 // Game path functions
 pub fn run_game(hours: &mut i32, stand: &mut bool, who: &mut bool) -> Result<()> {
@@ -133,6 +134,9 @@ fn stand_up(hours: &mut i32, stand: &mut bool, who: &mut bool) -> Result<()> {
 fn who_am_i(hours: &mut i32, stand: &mut bool, who: &mut bool) -> Result<()> {
     *hours -= 2;
 
+    // Sound effect for important existential question
+    sound::alert_sound()?;
+
     // Light flicker effect as you ask about your identity
     // This is a significant moment in the story
     light_flicker()?;
@@ -226,6 +230,9 @@ fn why_am_i_here(hours: &mut i32) -> Result<()> {
 fn am_i_alone(hours: &mut i32) -> Result<()> {
     *hours -= 2;
 
+    // Sound effect for the ultimate existential question
+    sound::alert_sound()?;
+
     // Light flicker when asking existential questions
     light_flicker()?;
 
@@ -253,6 +260,9 @@ fn am_i_alone(hours: &mut i32) -> Result<()> {
 
     // Light flicker as consciousness begins to fade
     light_flicker()?;
+
+    // Sound effect for fading consciousness
+    sound::fade_sound()?;
 
     clear_screen()?;
     print_epilogue("In your final hour, you watch as the sun finally leaves your field of vision.")?;
@@ -353,6 +363,9 @@ fn sit_and_rest() -> Result<()> {
 
     // Light flicker as consciousness starts to fade
     light_flicker()?;
+
+    // Sound effect for fading consciousness
+    sound::fade_sound()?;
 
     clear_screen()?;
     print_epilogue("As you watch the sun make its final descent, you realise how little you know about yourself and your strange, temporary world.")?;

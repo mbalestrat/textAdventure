@@ -3,6 +3,7 @@ use std::thread;
 use std::time::Duration;
 use colored::*;
 use rand::Rng;
+use crate::sound; // Import the sound module
 use crossterm::{
     cursor,
     event::{self, Event, KeyCode},
@@ -233,6 +234,10 @@ pub fn print_message(message: &str, color: Color) -> Result<()> {
 pub fn print_error(message: &str) -> Result<()> {
     let indent = 2; // Consistent with narrative text indentation
     let mut stdout = io::stdout();
+
+    // Play error sound
+    sound::error_sound()?;
+
     execute!(
         stdout,
         cursor::MoveToColumn(indent),
@@ -247,6 +252,10 @@ pub fn print_error(message: &str) -> Result<()> {
 pub fn print_epilogue(text: &str) -> Result<()> {
     let mut stdout = io::stdout();
     let indent = 2; // Number of spaces to indent each line
+
+    // Play a subtle sound for epilogue
+    sound::beep()?;
+    thread::sleep(Duration::from_millis(300));
 
     execute!(
         stdout,
@@ -330,6 +339,9 @@ pub fn print_ending_screen() -> Result<()> {
     let indent = 2; // Consistent with narrative text indentation
     let mut stdout = io::stdout();
 
+    // Play dramatic ending sound
+    sound::ending_sound()?;
+
     // Clear the screen first
     clear_screen()?;
 
@@ -350,8 +362,9 @@ pub fn print_ending_screen() -> Result<()> {
     execute!(stdout, cursor::MoveToColumn(indent)).unwrap();
     println!("{}", "   ╚══════╝    ╚═╝    ╚═╝  ╚═══╝          ╚═╝    ╚══════╝  ╚═════╝ ".bright_magenta());
 
-    // Add text below
+    // Add text below with sound
     println!("\n");
+    sound::beep()?;
     execute!(stdout, cursor::MoveToColumn(indent)).unwrap();
     println!("{}", "C O N S C I O U S N E S S   T E R M I N A T E D".bright_red());
 
@@ -368,8 +381,9 @@ pub fn print_ending_screen() -> Result<()> {
     execute!(stdout, cursor::MoveToColumn(indent)).unwrap();
     println!("{}", "CONNECTION TERMINATED - SESSION LOGS ARCHIVED".bright_white());
 
-    // Add date and time
+    // Add date and time with final beep
     println!();
+    sound::beep()?;
     execute!(stdout, cursor::MoveToColumn(indent)).unwrap();
     let timestamp = chrono::Local::now().format("%Y-%m-%d %H:%M:%S").to_string();
     println!("{}", format!("SYSTEM TIME: {}", timestamp).bright_green());
@@ -389,6 +403,11 @@ pub fn light_flicker() -> Result<()> {
     let mut stdout = io::stdout();
     let mut rng = rand::thread_rng();
     let (cols, rows) = terminal::size()?;
+
+    // Play flicker sound with 80% probability (so not every visual flicker has sound)
+    if rng.gen_bool(0.8) {
+        sound::flicker_sound()?;
+    }
 
     // Number of characters to flicker
     let num_flickers = rng.gen_range(3..10);
