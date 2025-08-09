@@ -4,6 +4,7 @@ use std::time::Duration;
 use colored::*;
 use rand::Rng;
 use crate::sound; // Import the sound module
+use crate::crt_effects::{self, PhosphorType}; // Import the CRT effects module
 use crossterm::{
     cursor,
     event::{self, Event, KeyCode},
@@ -51,6 +52,9 @@ pub fn print_title() {
 
     // Check terminal size and use appropriate title
     if let Ok((_, _)) = terminal::size() {
+        // Apply scan lines effect for CRT look
+        crt_effects::draw_scan_lines(PhosphorType::Green).unwrap_or(());
+
         // Simple text-based title for "SYN-TEC"
         println!(""); // Empty line for spacing
         execute!(stdout, cursor::MoveToColumn(indent)).unwrap();
@@ -65,11 +69,23 @@ pub fn print_title() {
         println!("{}", "   ███████║    ██║    ██║ ╚████║          ██║    ███████╗ ╚██████╗ ".bright_blue());
         execute!(stdout, cursor::MoveToColumn(indent)).unwrap();
         println!("{}", "   ╚══════╝    ╚═╝    ╚═╝  ╚═══╝          ╚═╝    ╚══════╝  ╚═════╝ ".bright_blue());
+
+        // Add random phosphor noise around the logo for authentic CRT look
+        let mut rng = rand::thread_rng();
+        if rng.gen_bool(0.8) { // 80% chance of noise
+            crt_effects::phosphor_noise(indent as u16, 1, 80, 6, PhosphorType::Blue, 0.03).unwrap_or(());
+        }
     }
 
-    // Initializing text with proper indentation
-    execute!(stdout, cursor::MoveToColumn(indent)).unwrap();
-    println!("{}", "Initialising...".bright_green().bold());
+    // Initializing text with proper indentation and phosphor glow
+    let init_text = "Initialising...";
+    let y_pos = match cursor::position() {
+        Ok((_, y)) => y,
+        Err(_) => 10,
+    };
+
+    crt_effects::print_with_phosphor(init_text, indent as u16, y_pos, PhosphorType::Green, 50).unwrap_or(());
+    println!();
 
     // Divider with proper indentation
     execute!(stdout, cursor::MoveToColumn(indent)).unwrap();
@@ -101,6 +117,11 @@ pub fn print_slowly(text: &str, color: Color) -> Result<()> {
 }
 
 pub fn print_narrative(text: &str) -> Result<()> {
+    print_narrative_with_phosphor(text, PhosphorType::Green)
+}
+
+// Enhanced version with phosphor glow effect
+pub fn print_narrative_with_phosphor(text: &str, phosphor_type: PhosphorType) -> Result<()> {
     let formatted = text;
     let lines = formatted.lines();
 
@@ -112,6 +133,12 @@ pub fn print_narrative(text: &str) -> Result<()> {
 
     let max_line_length = term_width.saturating_sub(6); // Allow for margins and indentation
     let indent = 2; // Number of spaces to indent each line
+
+    // Get current cursor position for starting line
+    let mut y_position = match cursor::position() {
+        Ok((_, y)) => y,
+        Err(_) => 0,
+    };
 
     for line in lines {
         let mut stdout = io::stdout();
@@ -131,15 +158,11 @@ pub fn print_narrative(text: &str) -> Result<()> {
             for word in words {
                 // Check if adding this word would exceed the max length
                 if current_line.len() + word.len() + 1 > max_line_length && !current_line.is_empty() {
-                    // Print the current line and start a new one
-                    for c in current_line.chars() {
-                        execute!(stdout, Print(c))?;
-                        stdout.flush()?;
-                        thread::sleep(Duration::from_millis(15));
-                    }
-                    println!();
-                    // Set indentation for continuation line
-                    execute!(stdout, cursor::MoveToColumn(indent + 2))?; // Additional indent for wrapped lines
+                    // Use phosphor effect for the current line
+                    crt_effects::print_slowly_with_phosphor(&current_line, indent as u16, y_position, phosphor_type, 15)?;
+
+                    // Move to next line with additional indent for wrapped lines
+                    y_position += 1;
                     current_line = word.to_string();
                 } else {
                     // Add word to current line
@@ -152,22 +175,26 @@ pub fn print_narrative(text: &str) -> Result<()> {
 
             // Print any remaining text
             if !current_line.is_empty() {
-                for c in current_line.chars() {
-                    execute!(stdout, Print(c))?;
-                    stdout.flush()?;
-                    thread::sleep(Duration::from_millis(15));
-                }
-                println!();
+                crt_effects::print_slowly_with_phosphor(&current_line, indent as u16, y_position, phosphor_type, 15)?;
+                y_position += 1;
             }
         } else {
-            // Original behavior for lines that don't need wrapping
-            for c in line.chars() {
-                execute!(stdout, Print(c))?;
-                stdout.flush()?;
-                thread::sleep(Duration::from_millis(15));
-            }
-            println!();
-         }
+            // For lines that don't need wrapping, use phosphor effect directly
+            crt_effects::print_slowly_with_phosphor(line, indent as u16, y_position, phosphor_type, 15)?;
+            y_position += 1;
+        }
+    }
+
+    // Ensure cursor is positioned correctly after all text
+    execute!(io::stdout(), cursor::MoveTo(0, y_position))?;
+
+    // Add random phosphor noise effect (subtle static) after the text
+    let mut rng = rand::thread_rng();
+    if rng.gen_bool(0.3) { // 30% chance of noise
+        let line_count = text.lines().count();
+        crt_effects::phosphor_noise(indent as u16, y_position.saturating_sub(line_count as u16),
+                                term_width as u16 - (indent as u16 * 2), line_count as u16,
+                                phosphor_type, 0.05)?;
     }
 
     thread::sleep(Duration::from_millis(500));

@@ -265,10 +265,10 @@ fn am_i_alone(hours: &mut i32) -> Result<()> {
     sound::fade_sound()?;
 
     clear_screen()?;
-    print_epilogue("In your final hour, you watch as the sun finally leaves your field of vision.")?;
-    print_epilogue("In its wake, the sky darkens, creating a beautiful deep gradient.")?;
-    print_epilogue("You close your eyes one last time.")?;
-    print_epilogue("A warm static envelopes your senses.")?;
+    print_epilogue("In your final hour, you watch as the sun finally leaves your field of vision. In its wake, the sky darkens, creating a beautiful deep gradient. You close your eyes one last time. A warm static envelopes your senses.")?;
+    // print_epilogue("In its wake, the sky darkens, creating a beautiful deep gradient.")?;
+    // print_epilogue("You close your eyes one last time.")?;
+    // print_epilogue("A warm static envelopes your senses.")?;
 
     // Final flicker effect as connection is lost
     light_flicker()?;

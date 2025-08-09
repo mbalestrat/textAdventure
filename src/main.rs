@@ -13,11 +13,13 @@ use crossterm::{
 mod display;
 mod narrative;
 mod sound;
+mod crt_effects;
 
 // Import necessary functions from modules
 use display::{clear_screen, print_slowly, print_title};
 use narrative::run_game;
 use sound::{beep, connection_sound, boot_sound};
+use crt_effects::{PhosphorType, crt_power_on, print_slowly_with_phosphor};
 
 fn main() -> Result<()> {
     // Setup terminal
@@ -38,23 +40,27 @@ fn main() -> Result<()> {
     // Introduction
     clear_screen()?;
 
-    // Classic PC XT boot sound
+    // Classic PC XT boot sound with CRT power-on effect
     boot_sound()?;
+    crt_power_on(PhosphorType::Green)?;
     print_title();
 
     thread::sleep(Duration::from_millis(1000));
 
-    print_slowly("WELCOME, USER. CURRENT SYSTEM TIME: ", Color::Cyan)?;
-    print_slowly(&format!("{}", Local::now().format("%a %b %e %T %Y")), Color::Green)?;
+    // Welcome message with phosphor persistence effect
+    print_slowly_with_phosphor("WELCOME, USER. CURRENT SYSTEM TIME: ", 2, 10, PhosphorType::Green, 30)?;
+
+    let time_str = format!("{}", Local::now().format("%a %b %e %T %Y"));
+    print_slowly_with_phosphor(&time_str, 2, 11, PhosphorType::Blue, 30)?;
 
     // Modem-like connection sound for establishing link
-    print_slowly("ESTABLISHING REMOTE LINK ", Color::Cyan)?;
+    print_slowly_with_phosphor("ESTABLISHING REMOTE LINK ", 2, 13, PhosphorType::Green, 30)?;
     connection_sound()?;
-    print_slowly("===================================== ", Color::Cyan)?;
+    print_slowly_with_phosphor("===================================== ", 25, 13, PhosphorType::Green, 10)?;
 
     // Success beep when connection is complete
     beep()?;
-    print_slowly("BEGIN.", Color::Cyan)?;
+    print_slowly_with_phosphor("BEGIN.", 2, 15, PhosphorType::Amber, 50)?;
 
     thread::sleep(Duration::from_millis(2000));
 

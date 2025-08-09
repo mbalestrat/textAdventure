@@ -29,8 +29,8 @@ tell application "Terminal"
     tell front window
         set background color to {0, 0, 0}
         set normal text color to {65535, 65535, 65535}
-        set font name to "Menlo"
-        set font size to 14
+        set font name to "Px437 IBM VGA 9x16"
+        set font size to 18
         
         # Set window position and size more reliably
         set position to {100, 100}
@@ -38,11 +38,11 @@ tell application "Terminal"
         
         # Force terminal dimensions
         do script "resize -s 35 100" in front tab
-        set custom title to "SYN-TEC: Remote Session"
     end tell
     
     # Bring Terminal to front
     activate
+    set custom title to "SYN-TEC: Remote Session"
 end tell
 '
 
