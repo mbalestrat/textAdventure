@@ -5,7 +5,7 @@ use rand::Rng;
 use crossterm::{
     cursor,
     execute,
-    style::{Color, Print, ResetColor, SetForegroundColor, SetBackgroundColor, Attribute, SetAttribute},
+    style::{Color, Print, ResetColor, SetForegroundColor},
     terminal,
 };
 
@@ -230,13 +230,13 @@ pub fn phosphor_noise(
     // Save cursor position
     execute!(stdout, cursor::SavePosition)?;
     
-    let noise_chars = vec!['·', ':', '·', '`', '.', ' '];
+    //let noise_chars = vec!['·', ':', '·', '`', '.', ' '];
     
     // Generate random phosphor noise
     for _ in 0..((width * height) as f32 * intensity) as u16 {
         let noise_x = x + rng.gen_range(0..width);
         let noise_y = y + rng.gen_range(0..height);
-        let noise_char = noise_chars[rng.gen_range(0..noise_chars.len())];
+        //let noise_char = noise_chars[rng.gen_range(0..noise_chars.len())];
         
         // Pick a random phosphor intensity
         let color = match rng.gen_range(0..10) {
@@ -350,24 +350,24 @@ pub fn crt_power_on(phosphor_type: PhosphorType) -> Result<()> {
 }
 
 // Simulate a screen with slight phosphor burn-in
-pub fn phosphor_burn_in(text: &str, x: u16, y: u16, phosphor_type: PhosphorType) -> Result<()> {
-    let mut stdout = io::stdout();
-    let (_, _, dim) = get_phosphor_colors(phosphor_type);
+// pub fn phosphor_burn_in(text: &str, x: u16, y: u16, phosphor_type: PhosphorType) -> Result<()> {
+//     let mut stdout = io::stdout();
+//     let (_, _, dim) = get_phosphor_colors(phosphor_type);
     
-    // Save cursor position
-    execute!(stdout, cursor::SavePosition)?;
+//     // Save cursor position
+//     execute!(stdout, cursor::SavePosition)?;
     
-    // Draw burn-in text (very dim)
-    execute!(
-        stdout,
-        cursor::MoveTo(x, y),
-        SetForegroundColor(dim),
-        Print(text),
-        ResetColor
-    )?;
+//     // Draw burn-in text (very dim)
+//     execute!(
+//         stdout,
+//         cursor::MoveTo(x, y),
+//         SetForegroundColor(dim),
+//         Print(text),
+//         ResetColor
+//     )?;
     
-    // Restore cursor position
-    execute!(stdout, cursor::RestorePosition)?;
+//     // Restore cursor position
+//     execute!(stdout, cursor::RestorePosition)?;
     
-    Ok(())
-}
+//     Ok(())
+// }

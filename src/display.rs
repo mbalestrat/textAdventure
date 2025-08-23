@@ -4,7 +4,7 @@ use std::time::Duration;
 use colored::*;
 use rand::Rng;
 use crate::sound; // Import the sound module
-use crate::crt_effects::{self, PhosphorType}; // Import the CRT effects module
+use crate::crt_effects::{self, print_slowly_with_phosphor, PhosphorType}; // Import the CRT effects module
 use crossterm::{
     cursor,
     event::{self, Event, KeyCode},
@@ -93,29 +93,29 @@ pub fn print_title() {
     println!(); // Just add spacing after initialization text
 }
 
-pub fn print_slowly(text: &str, color: Color) -> Result<()> {
-    let indent = 2; // Consistent with narrative text indentation
-    let mut stdout = io::stdout();
+// pub fn print_slowly(text: &str, color: Color) -> Result<()> {
+//     let indent = 2; // Consistent with narrative text indentation
+//     let mut stdout = io::stdout();
 
-    // Position at the start of the line with proper indentation
-    execute!(
-        stdout,
-        cursor::MoveToColumn(indent)
-    )?;
+//     // Position at the start of the line with proper indentation
+//     execute!(
+//         stdout,
+//         cursor::MoveToColumn(indent)
+//     )?;
 
-    for c in text.chars() {
-        execute!(
-            stdout,
-            SetForegroundColor(color),
-            Print(c),
-            ResetColor
-        )?;
-        stdout.flush()?;
-        thread::sleep(Duration::from_millis(20));
-    }
-    println!();
-    Ok(())
-}
+//     for c in text.chars() {
+//         execute!(
+//             stdout,
+//             SetForegroundColor(color),
+//             Print(c),
+//             ResetColor
+//         )?;
+//         stdout.flush()?;
+//         thread::sleep(Duration::from_millis(20));
+//     }
+//     println!();
+//     Ok(())
+// }
 
 pub fn print_narrative(text: &str) -> Result<()> {
     print_narrative_with_phosphor(text, PhosphorType::Green)
@@ -160,7 +160,7 @@ pub fn print_narrative_with_phosphor(text: &str, phosphor_type: PhosphorType) ->
                 // Check if adding this word would exceed the max length
                 if current_line.len() + word.len() + 1 > max_line_length && !current_line.is_empty() {
                     // Use phosphor effect for the current line
-                    crt_effects::print_slowly_with_phosphor(&current_line, indent as u16, y_position, phosphor_type, 15)?;
+                    print_slowly_with_phosphor(&current_line, indent as u16, y_position, phosphor_type, 15)?;
 
                     // Move to next line with additional indent for wrapped lines
                     y_position += 1;
@@ -176,12 +176,12 @@ pub fn print_narrative_with_phosphor(text: &str, phosphor_type: PhosphorType) ->
 
             // Print any remaining text
             if !current_line.is_empty() {
-                crt_effects::print_slowly_with_phosphor(&current_line, indent as u16, y_position, phosphor_type, 15)?;
+                print_slowly_with_phosphor(&current_line, indent as u16, y_position, phosphor_type, 15)?;
                 y_position += 1;
             }
         } else {
             // For lines that don't need wrapping, use phosphor effect directly
-            crt_effects::print_slowly_with_phosphor(line, indent as u16, y_position, phosphor_type, 15)?;
+            print_slowly_with_phosphor(line, indent as u16, y_position, phosphor_type, 15)?;
             y_position += 1;
         }
     }

@@ -6,7 +6,7 @@ use chrono::Local;
 use crossterm::{
     cursor,
     execute,
-    style::{Color, ResetColor},
+    style::{ResetColor},
     terminal::{self, Clear, ClearType},
 };
 
@@ -17,7 +17,7 @@ mod sound;
 mod crt_effects;
 
 // Import necessary functions from modules
-use display::{clear_screen, print_slowly, print_title};
+use display::{clear_screen, print_title};
 use narrative::run_game;
 use sound::{beep, connection_sound, boot_sound};
 use crt_effects::{PhosphorType, crt_power_on, print_slowly_with_phosphor};
