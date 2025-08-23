@@ -2,7 +2,7 @@ use std::io::{self, Result};
 use std::thread;
 use std::time::Duration;
 use chrono::Local;
-use colored::*;
+// use colored::{Color, *};
 use crossterm::{
     cursor,
     execute,
@@ -21,6 +21,8 @@ use display::{clear_screen, print_slowly, print_title};
 use narrative::run_game;
 use sound::{beep, connection_sound, boot_sound};
 use crt_effects::{PhosphorType, crt_power_on, print_slowly_with_phosphor};
+
+use crate::display::print_divider;
 
 fn main() -> Result<()> {
     // Setup terminal
@@ -55,9 +57,9 @@ fn main() -> Result<()> {
     print_slowly_with_phosphor(&time_str, 2, 12, PhosphorType::Blue, 30)?;
 
     // Modem-like connection sound for establishing link
-    print_slowly_with_phosphor("ESTABLISHING REMOTE LINK ", 2, 14, PhosphorType::Green, 30)?;
+    print_slowly_with_phosphor("ESTABLISHING REMOTE LINK...", 2, 14, PhosphorType::Green, 30)?;
     connection_sound()?;
-    print_slowly_with_phosphor("===================================== ", 25, 14, PhosphorType::Green, 10)?;
+    print_divider()?;
 
     // Print divider after connection messages
     println!("\n");
@@ -66,7 +68,7 @@ fn main() -> Result<()> {
         stdout,
         cursor::MoveToColumn(2)
     )?;
-    println!("{}", "--------------------------------".bright_blue());
+
 
     // Success beep when connection is complete (after divider)
     beep()?;
